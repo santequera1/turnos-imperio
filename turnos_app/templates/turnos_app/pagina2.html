@@ -1,0 +1,16 @@
+<!-- pagina2.html -->
+
+<h1>Página 2</h1>
+<p>Información recibida desde Página 1: {{ data_to_send }}</p>
+
+
+<!-- página2.html -->
+
+<script>
+    var socket = new WebSocket("ws//agendar-turno/pagina1/");
+
+    socket.onmessage = function(e) {
+        var message = JSON.parse(e.data);
+        // Hacer algo con el mensaje recibido
+    };
+</script>

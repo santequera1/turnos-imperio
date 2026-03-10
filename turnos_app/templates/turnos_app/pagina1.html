@@ -1,0 +1,23 @@
+<!-- pagina1.html -->
+
+<h1>Página 1</h1>
+<p>{{ data_to_send }}</p>
+<a href="{% url 'pagina2' %}">Ir a Página 2</a>
+
+
+<!-- página1.html -->
+
+<script>
+    var socket = new WebSocket("ws://agendar-turno/pagina2/");
+
+    socket.onmessage = function(e) {
+        var message = JSON.parse(e.data);
+        // Hacer algo con el mensaje recibido
+    };
+
+    // Función para enviar datos al servidor
+    function sendMessage() {
+        var message = "Datos que deseas enviar";
+        socket.send(JSON.stringify({ 'message': message }));
+    }
+</script>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administración de Turnos</title>
+</head>
+<body>
+    <h1>Administración de Turnos</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Agendar Turno</button>
+    </form>
+
+    <h2>Listado de Turnos:</h2>
+    <ul>
+        {% for turno in turnos %}
+            <li>{{ turno.nombre_cliente }} - {{ turno.referencia_motocicleta }} - {{ turno.numero_telefono }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

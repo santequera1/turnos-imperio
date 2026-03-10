@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Imperio Motos - Turnos</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'turnos_app/styles.css' %}">
+    <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap"
+    rel="stylesheet" />
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+  <script src="https://cdn.tailwindcss.com/3.3.0"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        fontFamily: {
+          sans: ["Roboto", "sans-serif"],
+          body: ["Roboto", "sans-serif"],
+          mono: ["ui-monospace", "monospace"],
+        },
+      },
+      corePlugins: {
+        preflight: false,
+      },
+    };
+  </script>
+  </head>
+  <body style="background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);" class="flex items-center min-h-screen">
+        <!--NAVBAR-->
+
+
+<nav style="background-color: #0D0D0D; border-bottom: 2px solid #39FF14;" class="fixed w-full z-20 top-0 left-0">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <a href="{% url 'pagina_principal' %}" class="flex items-center">
+        <img src="{% static 'turnos_app/logo-horizontal.png' %}" alt="Imperio Motos" class="h-8 mr-3">
+    </a>
+    <div class="flex md:order-2">
+        <a href="{% url 'atender_turnos' %}"
+  class="px-6 py-2 no-underline rounded text-sm" style="background-color: #1A1A1A; color: #39FF14; border: 1px solid #39FF14;">
+            Administrar Turnos</a>
+        <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
+          <span class="sr-only">Menú</span>
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+          </svg>
+      </button>
+    </div>
+    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+      <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0" style="background-color: #0D0D0D;">
+        <l1><h1 class="text-white text-3xl" style="text-shadow: 0 0 10px #39FF14;">IMPERIO MOTOS</h1></l1>
+      </ul>
+    </div>
+    </div>
+  </nav>
+
+
+    <!--FIN DEL NAVBAR-->
+
+    <div class="flex caja mt-15" id="botones">
+        <img src="{% static 'turnos_app/logo-vertical.png' %}" class="logo" width="300px" style="filter: drop-shadow(0 0 15px rgba(57, 255, 20, 0.3));">
+
+        <div class="flex py-0 m-0" >
+          <a href="{% url 'agendar_turno' %}" class="flex flex-col px-6 py-2 m-2 no-underline rounded text-sm font-bold" style="background: linear-gradient(90deg, #39FF14 0%, #00CC00 100%); color: #000000;">Nuevo turno</a>
+          <a href="{% url 'lista_turnos' %}" class="flex flex-col px-6 py-2 m-2 no-underline rounded text-sm font-bold" style="background: linear-gradient(90deg, #39FF14 0%, #00CC00 100%); color: #000000;">Ver Lista de turnos</a>
+          <a href="{% url 'atender_turnos' %}" class="flex flex-col px-6 py-2 m-2 no-underline rounded text-sm font-bold" style="background: linear-gradient(90deg, #39FF14 0%, #00CC00 100%); color: #000000;">Administrar turnos</a>
+        </div>
+
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+</body>
+</html>
