@@ -577,7 +577,7 @@ input:checked + .slider:before {
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
     .container {
-        padding: 0 16px;
+        padding: 0 12px;
     }
 
     .stats-grid {
@@ -585,12 +585,20 @@ input:checked + .slider:before {
     }
 
     .navbar {
-        padding: 10px 16px;
+        padding: 10px 12px;
+    }
+
+    .navbar-links {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        gap: 0;
     }
 
     .navbar-links a {
         padding: 6px 10px;
         font-size: 13px;
+        white-space: nowrap;
     }
 
     .table-wrapper {
@@ -598,13 +606,34 @@ input:checked + .slider:before {
     }
 
     .page-title {
-        font-size: 22px;
+        font-size: 20px;
+    }
+
+    .form-card {
+        padding: 20px 16px;
+    }
+
+    .page-content {
+        padding-top: calc(16px + 56px);
     }
 }
 
 @media (max-width: 480px) {
+    .login-wrapper {
+        padding: 16px;
+        align-items: flex-start;
+        padding-top: 40px;
+    }
+
     .login-card {
-        padding: 32px 24px;
+        padding: 28px 20px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 12px;
+    }
+
+    .login-logo {
+        max-width: 160px;
     }
 
     .stats-grid {
@@ -612,6 +641,25 @@ input:checked + .slider:before {
     }
 
     .navbar-links {
-        gap: 2px;
+        gap: 0;
+    }
+
+    .navbar-links a {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+
+    .form-card {
+        padding: 16px 14px;
+    }
+
+    .placa-badge {
+        font-size: 22px;
+        min-width: 130px;
     }
 }

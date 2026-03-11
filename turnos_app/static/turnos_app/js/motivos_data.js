@@ -1,5 +1,6 @@
 var MOTIVOS_REPARACION = [
   // Mantenimiento preventivo
+  "Mantenimiento general",
   "Cambio de aceite",
   "Cambio de filtro de aceite",
   "Cambio de filtro de aire",
@@ -173,6 +174,7 @@ var MOTIVOS_REPARACION = [
   "Cambio de fusible",
   "Luces no encienden",
   "Cambio de bombillo",
+  "Cambio de luces",
   "Reparación de farola",
   "Reparación de stop",
   "Reparación de direccionales",

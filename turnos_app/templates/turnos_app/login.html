@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Iniciar Sesion - Imperio Motos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Iniciar Sesion - Imperio Motos</title>
     {% load static %}
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'turnos_app/styles.css' %}">
@@ -15,7 +16,7 @@
 
         {% if form.errors %}
         <div class="alert alert-error">
-            Usuario o contrasena incorrectos.
+            Usuario o contraseña incorrectos.
         </div>
         {% endif %}
 
@@ -24,13 +25,15 @@
 
             <div class="form-group">
                 <label for="id_username">Usuario</label>
-                <input type="text" name="username" id="id_username" autofocus placeholder="Usuario">
+                <input type="text" name="username" id="id_username" autofocus placeholder="Usuario"
+                    autocapitalize="none" autocorrect="off" autocomplete="username">
             </div>
 
             <div class="form-group">
-                <label for="id_password">Contrasena</label>
+                <label for="id_password">Contraseña</label>
                 <div style="position:relative;">
-                    <input type="password" name="password" id="id_password" placeholder="Contrasena" style="padding-right:44px;">
+                    <input type="password" name="password" id="id_password" placeholder="Contraseña" style="padding-right:44px;"
+                        autocapitalize="none" autocomplete="current-password">
                     <button type="button" id="toggle-password"
                         style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#888; padding:0; display:flex; align-items:center;">
                         <svg id="icon-eye" style="width:20px;height:20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
