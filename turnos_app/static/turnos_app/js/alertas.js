@@ -96,7 +96,7 @@ fire(nombreCliente)
 const actualizarListaTurnos = () => {
     if (!actualizacionEnProgreso) { // Evitar que se ejecute si ya hay una actualización en curso
         actualizacionEnProgreso = true; // Marcar que la actualización está en curso
-        fetch('/agendar-turno/obtener-lista-turnos/')
+        fetch('/obtener-lista-turnos/')
             .then(response => response.json())
             .then(data => {
                 console.log(data.turnos);
