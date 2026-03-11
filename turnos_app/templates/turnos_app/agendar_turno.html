@@ -93,29 +93,10 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-
 <script src="{% static 'turnos_app/js/motos_data.js' %}"></script>
 <script src="{% static 'turnos_app/js/motivos_data.js' %}"></script>
 <script src="{% static 'turnos_app/js/index.js' %}"></script>
 <script src="{% static 'turnos_app/js/alertas.js' %}"></script>
-<script>
-$(function() {
-    $("#cliente_autocomplete").autocomplete({
-        source: "{% url 'buscar_cliente' %}",
-        select: function(event, ui) {
-            $('#cliente_id').val(ui.item.value);
-            $('#id_nombre_cliente').val(ui.item.nombre);
-            $('#id_referencia_motocicleta').val(ui.item.referencia_motocicleta);
-            $('#id_motivo_reparacion').val(ui.item.motivo_reparacion);
-            $('#id_numero_telefono').val(ui.item.numero_telefono);
-            return false;
-        }
-    });
-});
-</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     var input = document.getElementById("cliente_autocomplete");
