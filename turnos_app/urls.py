@@ -14,7 +14,6 @@ urlpatterns = [
     path('enviar-correo-atencion/', views.enviar_correo_atencion, name='enviar_correo_atencion'),
     path('confirmar-reinicio/', views.enviar_correo_atencion, name='confirmar-reinicio'),
     path('obtener-lista-turnos/', views.obtener_lista_turnos, name='obtener_lista_turnos'),
-    path('agendar-turno/llamar-cliente/<int:turno_id>/', views.llamar_cliente, name='llamar_cliente'),
 
 ]
 

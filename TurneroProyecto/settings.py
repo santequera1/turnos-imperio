@@ -18,8 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_twilio',
-    'channels',
     'compressor',
     'turnos_app',
 ]
@@ -52,12 +50,6 @@ TEMPLATES = [
     },
 ]
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-}
-
 WSGI_APPLICATION = 'TurneroProyecto.wsgi.application'
 
 DATABASES = {
@@ -81,12 +73,16 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'turnos_app', 'static'),
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', '')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '')
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/agendar-turno/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv('EMAIL_HOST', '')

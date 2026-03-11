@@ -1,8 +1,6 @@
 from .forms import TurnoForm
 from .models import Turno 
 from django.shortcuts import render, redirect
-from twilio.rest import Client
-from .send_sms import sendsms 
 from .forms import ReiniciarNumerosForm
 import os
 import csv
@@ -64,8 +62,6 @@ def agendar_turno(request):
             print("Nuevo turno agendado")
             print(numero_telefono + " | " + nombre + " | " + motocicleta + " | " + motivo + " | " + fecha)
             
-            sendsms(numero_telefono, nombre, motocicleta)
-            #sendsms()
             
     else:
         form = TurnoForm()
@@ -73,40 +69,6 @@ def agendar_turno(request):
     #Quedarse en la misma página
     context = {'form': form}
     return render(request, 'turnos_app/agendar_turno.html', context)
-
-def llamar_cliente(request, turno_id):
-    try:
-        # Obtén el turno utilizando el ID proporcionado
-        turno = Turno.objects.get(id=turno_id)
-
-        # Configura las credenciales de Twilio desde tu archivo settings.py
-        account_sid = settings.TWILIO_ACCOUNT_SID
-        auth_token = settings.TWILIO_AUTH_TOKEN
-        client = Client(account_sid, auth_token)
-
-        # Aquí deberías obtener el número de teléfono del cliente desde el objeto 'turno'
-        numero_cliente = turno.numero_telefono
-
-        # Mensaje que deseas enviar
-        mensaje = "¡Hola " + turno.nombre_cliente + "! Tu turno en Imperio Motos (#" + str(turno.numero_turno) + ") está listo para ser atendido en nuestro taller."
-
-        # Crea y envía el mensaje
-        message = client.messages.create(
-            body=mensaje,
-            from_='+19285850221',  # Debe ser un número Twilio válido configurado en settings.py
-            to='+57' + numero_cliente  # Asegúrate de incluir el prefijo internacional correspondiente
-        )
-
-        # Imprime el SID del mensaje en la consola (opcional)
-        print(message.sid)
-
-        # Redirecciona de nuevo a la página de atender turnos
-        return redirect('atender_turnos')
-
-    except Turno.DoesNotExist:
-        print("Ocurrió un error")
-        # Maneja el caso en el que no se encuentra el turno
-        return redirect('atender_turnos')  # O muestra un mensaje de error, según tu preferencia
 
 
 
