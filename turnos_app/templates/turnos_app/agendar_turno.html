@@ -60,9 +60,10 @@
                     <ul id="moto-autocomplete" style="position:absolute; z-index:50; width:100%; max-height:192px;"></ul>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="position:relative;">
                     {{ form.motivo_reparacion.label_tag }}
                     {{ form.motivo_reparacion }}
+                    <ul id="motivo-autocomplete" style="position:absolute; z-index:50; width:100%; max-height:200px; overflow-y:auto; background:#1a1a1a; border:1px solid #333; border-radius:6px; margin:0; padding:0; list-style:none; display:none;"></ul>
                 </div>
 
                 <div class="form-group">
@@ -96,6 +97,7 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
 <script src="{% static 'turnos_app/js/motos_data.js' %}"></script>
+<script src="{% static 'turnos_app/js/motivos_data.js' %}"></script>
 <script src="{% static 'turnos_app/js/index.js' %}"></script>
 <script src="{% static 'turnos_app/js/alertas.js' %}"></script>
 <script>
@@ -196,6 +198,50 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("click", function (e) {
         if (!motoDropdown.contains(e.target) && e.target !== motoInput) {
             motoDropdown.classList.add("hidden");
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var motivoInput = document.getElementById("id_motivo_reparacion");
+    var motivoDropdown = document.getElementById("motivo-autocomplete");
+    if (!motivoInput || !motivoDropdown) return;
+
+    motivoInput.setAttribute("autocomplete", "off");
+
+    motivoInput.addEventListener("input", function () {
+        var q = motivoInput.value.trim().toLowerCase();
+        if (q.length < 2) {
+            motivoDropdown.style.display = "none";
+            return;
+        }
+        var results = MOTIVOS_REPARACION.filter(function(m) {
+            return m.toLowerCase().indexOf(q) !== -1;
+        });
+        motivoDropdown.innerHTML = "";
+        if (results.length > 0) {
+            motivoDropdown.style.display = "block";
+            results.slice(0, 10).forEach(function(motivo) {
+                var li = document.createElement("li");
+                li.textContent = motivo;
+                li.style.cssText = "padding:10px 14px; cursor:pointer; color:#ccc; border-bottom:1px solid #2a2a2a; font-size:14px;";
+                li.addEventListener("mouseenter", function() { li.style.background = "#2a2a2a"; li.style.color = "#7ac900"; });
+                li.addEventListener("mouseleave", function() { li.style.background = ""; li.style.color = "#ccc"; });
+                li.addEventListener("click", function () {
+                    motivoInput.value = motivo;
+                    motivoDropdown.style.display = "none";
+                });
+                motivoDropdown.appendChild(li);
+            });
+        } else {
+            motivoDropdown.style.display = "none";
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!motivoDropdown.contains(e.target) && e.target !== motivoInput) {
+            motivoDropdown.style.display = "none";
         }
     });
 });

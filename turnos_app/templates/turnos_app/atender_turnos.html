@@ -96,18 +96,6 @@
             </form>
         </div>
 
-        <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
-            <a href="{% url 'borrar-registros' %}" onclick="confirmarBorrado()" class="btn btn-danger btn-sm">
-                Borrar registros
-            </a>
-            <a href="{% url 'descargar_csv' %}" class="btn btn-secondary btn-sm">
-                Descargar CSV
-            </a>
-            <form method="POST" action="{% url 'enviar_correo_atencion' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-secondary btn-sm">Enviar correo</button>
-            </form>
-        </div>
     </div>
 </div>
 
