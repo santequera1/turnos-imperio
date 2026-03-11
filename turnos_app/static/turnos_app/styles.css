@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 
 /* === RESET Y BASE === */
 *, *::before, *::after {
@@ -210,7 +210,14 @@ select option {
 
 textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 60px;
+}
+
+#id_motivo_reparacion {
+    min-height: 44px;
+    height: 44px;
+    resize: none;
+    overflow: hidden;
 }
 
 /* === BOTONES === */
@@ -415,12 +422,12 @@ tbody tr:hover {
     display: inline-block;
     background: #f5c518;
     color: #000000;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 4px;
+    font-family: 'Bebas Neue', 'Courier New', monospace;
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 5px;
     text-transform: uppercase;
-    padding: 8px 18px 10px;
+    padding: 6px 16px 8px;
     border-radius: 6px;
     border: 3px solid #000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.5);

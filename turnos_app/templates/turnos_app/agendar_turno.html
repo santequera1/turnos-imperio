@@ -73,9 +73,9 @@
 
                 <div class="form-group">
                     <label for="id_placa">Placa</label>
-                    <div class="placa-badge" style="display:block; max-width:200px;">
+                    <div class="placa-badge" style="display:block; max-width:210px;">
                         <input type="text" id="id_placa" name="placa" placeholder="ABC123" maxlength="7"
-                            style="font-family:'Courier New',monospace; font-size:22px; font-weight:900; letter-spacing:4px; color:#000; background:transparent; border:none; outline:none; text-transform:uppercase; width:100%; text-align:center; padding:0;">
+                            style="font-family:'Bebas Neue','Courier New',monospace; font-size:28px; font-weight:400; letter-spacing:5px; color:#000; background:transparent; border:none; outline:none; text-transform:uppercase; width:100%; text-align:center; padding:0;">
                     </div>
                 </div>
 
@@ -210,8 +210,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     motivoInput.setAttribute("autocomplete", "off");
 
-    motivoInput.addEventListener("input", function () {
-        var q = motivoInput.value.trim().toLowerCase();
+    function getLastSegment(val) {
+        var parts = val.split(",");
+        return parts[parts.length - 1].trim().toLowerCase();
+    }
+
+    function filtrarMotivos() {
+        var q = getLastSegment(motivoInput.value);
         if (q.length < 2) {
             motivoDropdown.style.display = "none";
             return;
@@ -228,16 +233,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 li.style.cssText = "padding:10px 14px; cursor:pointer; color:#ccc; border-bottom:1px solid #2a2a2a; font-size:14px;";
                 li.addEventListener("mouseenter", function() { li.style.background = "#2a2a2a"; li.style.color = "#7ac900"; });
                 li.addEventListener("mouseleave", function() { li.style.background = ""; li.style.color = "#ccc"; });
-                li.addEventListener("click", function () {
-                    motivoInput.value = motivo;
-                    motivoDropdown.style.display = "none";
+                li.addEventListener("mousedown", function (e) {
+                    e.preventDefault(); // evita que el input pierda foco
+                    var partes = motivoInput.value.split(",");
+                    partes[partes.length - 1] = " " + motivo;
+                    motivoInput.value = partes.join(",").replace(/^,\s*/, "");
+                    filtrarMotivos(); // sigue filtrando el nuevo segmento
                 });
                 motivoDropdown.appendChild(li);
             });
         } else {
             motivoDropdown.style.display = "none";
         }
-    });
+    }
+
+    motivoInput.addEventListener("input", filtrarMotivos);
 
     document.addEventListener("click", function (e) {
         if (!motivoDropdown.contains(e.target) && e.target !== motivoInput) {
