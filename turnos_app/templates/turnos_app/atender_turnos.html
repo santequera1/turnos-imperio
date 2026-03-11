@@ -78,15 +78,6 @@
             <button type="submit" name="atender" value="{{ turno.id }}" class="btn btn-danger btn-sm">
                 Finalizar
             </button>
-            <a href="{% url 'llamar_cliente' turno.id %}" class="btn btn-sm" style="background:#1a3a00; color:#7ac900; border:1px solid #7ac900;">
-                Llamar
-            </a>
-            <a href="{% url 'llamar_cliente' turno.id %}" class="btn btn-sm llamar-cliente"
-               style="background:#1a3a00; color:#7ac900; border:1px solid #7ac900;"
-               data-nombre="{{ turno.nombre_cliente }}"
-               onclick="almacenarCliente('{{ turno.nombre_cliente }}')">
-                Avisar
-            </a>
             <label class="switch">
                 <input type="checkbox"
                     onchange="actualizarEstadoReparacion(this, '{{ turno.id }}');"
