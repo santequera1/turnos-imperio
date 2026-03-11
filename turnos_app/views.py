@@ -49,6 +49,9 @@ def agendar_turno(request):
                 turno.cliente_frecuente = cliente_frecuente
 
             turno.save()
+            form = TurnoForm()
+            context = {'form': form, 'turno_creado': True, 'numero_turno': turno.numero_turno, 'nombre_cliente': turno.nombre_cliente}
+            return render(request, 'turnos_app/agendar_turno.html', context)
 
     else:
         form = TurnoForm()
