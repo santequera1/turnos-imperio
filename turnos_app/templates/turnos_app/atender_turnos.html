@@ -2,305 +2,157 @@
 <html lang="es">
 <head>
     <title>Imperio Motos | Atender Turnos (Mecanico)</title>
-    <meta http-equiv="refresh" content="400"> <!-- Refrescar la página cada 10 segundos -->
+    <meta http-equiv="refresh" content="400">
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'turnos_app/styles.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'turnos_app/styles.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
 
-    <link
-    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap"
-    rel="stylesheet" />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
-  <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
-
-
-  <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-  </head>
-  <body class="bg-slate-950" style="background-color: #000000; color: #FFFFFF">
-    <a href="{% url 'agendar_turno' %}">
-      <div id="logo-mts" class="absolute top-2">
-        <img src="{% static 'turnos_app/logo-vertical.png' %}" class="w-96">
-      </div>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="{% url 'pagina_principal' %}">
+        <img src="{% static 'turnos_app/logo-horizontal.png' %}" alt="Imperio Motos" class="navbar-logo">
     </a>
-    <audio src="/static/turnos_app/js/turnosound.mp3" autoplay>
-      Your browser does not support the <code>audio</code> element.
-    </audio>
+    <div class="navbar-links">
+        <a href="{% url 'dashboard' %}">Historial</a>
+        <a href="{% url 'dashboard_clientes' %}">Clientes</a>
+        <a href="{% url 'agendar_turno' %}">Caja</a>
+        <a href="{% url 'atender_turnos' %}" class="active">Mecanico</a>
+        <a href="{% url 'logout' %}" class="danger">Salir</a>
+    </div>
+</nav>
+<!-- FIN NAVBAR -->
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5"  id="caja-listado2">
-      <form method="post">
-        {% csrf_token %}
-      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            
-            <tr>
-                  <th scope="col" class="px-4 py-1">
-                        <p class="text-center">#M</p>
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                   Motocicleta
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-center">
-                      Reparación
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                      Turno
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-center">
-                      Acción
-                  </th>
-              </tr>
-          </thead>
-          <tbody>
+<audio src="/static/turnos_app/js/turnosound.mp3" autoplay>
+    Your browser does not support the audio element.
+</audio>
 
-              <!-- Modifica tus botones de "Llamar" para incluir un identificador único y datos relevantes -->
+<div class="container">
+    <div class="page-content">
+        <h1 class="page-title">Turnos en cola</h1>
+
+        <div class="card" style="padding:0; overflow:hidden;">
+            <form method="post">
+                {% csrf_token %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:48px;">#</th>
+                                <th>Motocicleta / Cliente</th>
+                                <th>Reparacion</th>
+                                <th>Turno</th>
+                                <th style="text-align:center;">Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
 {% for turno in turnos %}
-<tr data-id="{{ turno.id }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-    <!-- Número en la lista -->
-    <td class="w-3 p-3">
-        <div class="min-w-8 w-8 text-right text-gray-700">{{ forloop.counter }}</div>
-    </td>
+<tr data-id="{{ turno.id }}">
+    <td style="color:#888; font-size:13px;">{{ forloop.counter }}</td>
 
-    <!-- Cliente y moto -->
-    <th scope="row" class="flex items-center px-2 py-0 text-gray-900 whitespace-nowrap dark:text-white">
-        <img class="w-8 h-8 rounded-full bg-white px-1 py-1" src="{% static 'turnos_app/user.png' %}" alt="Imagen de la moto" width="30">
-        <div class="pl-3">
-            <div class="text-base font-semibold">{{ turno.referencia_motocicleta }}</div>
-            <div class="font-normal text-gray-500">
-                <p id="nombre-cliente">{{ turno.nombre_cliente }}</p>
+    <td>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="{% static 'turnos_app/user.png' %}" alt="user" style="width:32px; height:32px; border-radius:50%; background:#222; object-fit:cover;">
+            <div>
+                <div style="color:#ffffff; font-weight:600; font-size:14px;">{{ turno.referencia_motocicleta }}</div>
+                <div style="color:#888; font-size:13px;">{{ turno.nombre_cliente }}</div>
             </div>
         </div>
-    </th>
-
-    <!-- Motivo de reparación -->
-    <td class="px-6 py-2">
-        {{ turno.motivo_reparacion }}
     </td>
 
-    <!-- Número de turno -->
-    <td class="px-6 py-2">
-        <div class="flex items-center">
-            <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> 
-            #{{ turno.numero_turno }}
+    <td style="font-size:14px;">{{ turno.motivo_reparacion }}</td>
+
+    <td>
+        <div style="display:flex; align-items:center; gap:6px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#7ac900; display:inline-block;"></span>
+            <span style="color:#7ac900; font-weight:600;">#{{ turno.numero_turno }}</span>
         </div>
     </td>
 
-    <!-- Acciones -->
-    <td class="px-6 py-2 flex items-center">
-        <!-- Botón finalizar -->
-        <button type="submit" name="atender" value="{{ turno.id }}" class="text-xs rounded bg-red-700 font-normal py-2 px-2 text-white">
-            Finalizar
-        </button>
-
-        <!-- Botón llamar -->
-        <a href="{% url 'llamar_cliente' turno.id %}" class="bg-green-900 hover: text-white text-xs py-2 px-4 rounded mx-2" id="boton-alerta">
-            Llamar
-        </a>
-
-        <!-- Botón avisar -->
-        <a href="{% url 'llamar_cliente' turno.id %}" class="bg-green-900 hover: text-white text-xs py-2 px-4 rounded mx-2 llamar-cliente" 
-           data-nombre="{{ turno.nombre_cliente }}" onclick="almacenarCliente('{{ turno.nombre_cliente }}')">
-            Avisar
-        </a>
-         <label class="switch">
-        
-        <input type="checkbox" onchange="actualizarEstadoReparacion(this, '{{ turno.id }}');" data-nombre-cliente="{{ turno.nombre_cliente }}" {% if turno.en_reparacion %}checked{% endif %}>
-        <span class="slider round"></span>
-      </label>
+    <td>
+        <div style="display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:wrap;">
+            <button type="submit" name="atender" value="{{ turno.id }}" class="btn btn-danger btn-sm">
+                Finalizar
+            </button>
+            <a href="{% url 'llamar_cliente' turno.id %}" class="btn btn-sm" style="background:#1a3a00; color:#7ac900; border:1px solid #7ac900;">
+                Llamar
+            </a>
+            <a href="{% url 'llamar_cliente' turno.id %}" class="btn btn-sm llamar-cliente"
+               style="background:#1a3a00; color:#7ac900; border:1px solid #7ac900;"
+               data-nombre="{{ turno.nombre_cliente }}"
+               onclick="almacenarCliente('{{ turno.nombre_cliente }}')">
+                Avisar
+            </a>
+            <label class="switch">
+                <input type="checkbox"
+                    onchange="actualizarEstadoReparacion(this, '{{ turno.id }}');"
+                    data-nombre-cliente="{{ turno.nombre_cliente }}"
+                    {% if turno.en_reparacion %}checked{% endif %}>
+                <span class="slider round"></span>
+            </label>
+        </div>
     </td>
-    
-      
 </tr>
 {% endfor %}
 
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
 
-    
-          </tbody>
-      </table>
-      </form>
-    </div>
-    
-
-  
-
-    <script>
-   
-      </script>
-      
-
-
-
-
-<script>
-  // Función para mostrar el modal
-  function showModal(modalId) {
-      const modal = document.getElementById(modalId);
-      modal.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
-  }
-
-  // Función para ocultar el modal
-  function hideModal(modalId) {
-      const modal = document.getElementById(modalId);
-      modal.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-  }
-
-  // Obtén todos los elementos con atributos 'data-modal-toggle'
-  const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
-
-  // Agrega un evento de clic a cada botón de alternancia de modal
-  modalToggleButtons.forEach(button => {
-      const targetModalId = button.getAttribute('data-modal-target');
-
-      button.addEventListener('click', () => {
-          showModal(targetModalId);
-      });
-  });
-
-  // Obtén todos los elementos con atributos 'data-modal-hide'
-  const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
-
-  // Agrega un evento de clic a cada botón de ocultar modal
-  modalHideButtons.forEach(button => {
-      const targetModalId = button.getAttribute('data-modal-hide');
-
-      button.addEventListener('click', () => {
-          hideModal(targetModalId);
-      });
-  });
-</script>
-
-
-
-
-
-<!--------------------------------MENU INFERIOR--------------------------->
-    <div class="fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full hover:rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600" id="caja-menu-flotante">
-      <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
-        <a href="{% url 'lista_turnos' %}" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group hover:rounded-full">
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14v4m-4 1h8M1 10h18M2 1h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z"/>
-          </svg>
-          <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Lista</span>
-            <span class="sr-only">Wallet</span>
-        </a>
-
-         <a class="inline-flex flex-col items-center justify-center px-5 rounded-r-full hover:bg-gray-50 dark:hover:bg-gray-800 group" href="{% url 'descargar_csv' %}">
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
-            <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
-          </svg>
-            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Descargar</span>
-              <span class="sr-only">Profile</span>
-          </a>
-          <div id="tooltip-profile" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-              Profile
-              <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-          <div class="flex items-center justify-center">
-              <a href="{% url 'agendar_turno' %}" class="inline-flex items-center justify-center w-10 h-10 font-medium bg-indigo-950 rounded-full hover: group focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800">
-                  <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                  </svg>
-                  <span class="sr-only">New item</span>
-                </a>
-
-          </div>
-          <div id="tooltip-new" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-              Create new item
-              <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-          <a href="{% url 'borrar-registros' %}" onclick="confirmarBorrado()" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-              <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
-            </svg>
-              <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Clientes</span>
-              <span class="sr-only">Settings</span>
-          </a>
-          <div id="tooltip-settings" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-              Settings
-              <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-          <a class="inline-flex flex-col items-center justify-center px-5 rounded-r-full hover:bg-gray-50 dark:hover:bg-gray-800 group" href="{% url 'descargar_csv' %}">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-              <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-              <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-            </svg>
-              <span class="sr-only">Profile</span>
-              <form method="POST" action="{% url 'enviar_correo_atencion' %}">
+        <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="{% url 'borrar-registros' %}" onclick="confirmarBorrado()" class="btn btn-danger btn-sm">
+                Borrar registros
+            </a>
+            <a href="{% url 'descargar_csv' %}" class="btn btn-secondary btn-sm">
+                Descargar CSV
+            </a>
+            <form method="POST" action="{% url 'enviar_correo_atencion' %}" style="display:inline;">
                 {% csrf_token %}
-                  <button type="submit" class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Enviar</button>
-              </form>
-          </a>
-          <div id="tooltip-profile" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-              Profile
-              <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-        
+                <button type="submit" class="btn btn-secondary btn-sm">Enviar correo</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-      </div>
-  </div>
-  <!--------------------------------MENU INFERIOR--------------------------->
-
-  
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>  
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'turnos_app/js/index.js' %}"></script>
-    <script src="{% static 'turnos_app/js/alertas.js' %}"></script>
-    <script src="{% static 'turnos_app/js/variables.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+<script src="{% static 'turnos_app/js/index.js' %}"></script>
+<script src="{% static 'turnos_app/js/alertas.js' %}"></script>
+<script src="{% static 'turnos_app/js/variables.js' %}"></script>
 <script>
-  var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
-  function sonar(audio){
-      var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
-      audio.play();}
-  </script>
+var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
+function sonar(audio){
+    var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
+    audio.play();
+}
+</script>
 <script>
-  $(document).ready(function () {
-    
-    // Agrega un controlador de eventos de clic a los botones de "Llamar" con la clase "boton-llamar"
+$(document).ready(function () {
     $('.boton-llamar').on('click', function () {
-      // Obtiene los datos relevantes del atributo data
-      const telefono = $(this).data('telefono');
-      const nombre = $(this).data('nombre');
-      const motocicleta = $(this).data('motocicleta');
+        var telefono = $(this).data('telefono');
+        var nombre = $(this).data('nombre');
+        var motocicleta = $(this).data('motocicleta');
 
-      // Realizando una solicitud AJAX al servidor para llamar a sendsms
-      $.ajax({
-        type: 'POST',
-        url: '/static/turnos_app/js/send_sms.py', 
-        data: {
-          telefono: telefono,
-          nombre: nombre,
-          motocicleta: motocicleta
-        },
-        success: function (data) {
-          // Manejo la respuesta del servidor si es necesario
-          console.log('Solicitud enviada con éxito');
-        },
-        error: function (error) {
-          // Manejo errores si es necesario
-          console.error('Error al enviar la solicitud:', error);
-        }
-      });
+        $.ajax({
+            type: 'POST',
+            url: '/static/turnos_app/js/send_sms.py',
+            data: { telefono: telefono, nombre: nombre, motocicleta: motocicleta },
+            success: function (data) { console.log('Solicitud enviada con exito'); },
+            error: function (error) { console.error('Error al enviar la solicitud:', error); }
+        });
     });
-  });
+});
 
-
-  
-  function actualizarEstadoReparacion(checkbox, turnoId) {
-    const estado = checkbox.checked ? '1' : '0';
-    const nombreCliente = checkbox.getAttribute('data-nombre-cliente');
-
-    // Deshabilitar el checkbox temporalmente para evitar clicks múltiples
+function actualizarEstadoReparacion(checkbox, turnoId) {
+    var estado = checkbox.checked ? '1' : '0';
+    var nombreCliente = checkbox.getAttribute('data-nombre-cliente');
     checkbox.disabled = true;
 
-    fetch(`/actualizar-estado/${turnoId}/`, {
+    fetch("/actualizar-estado/" + turnoId + "/", {
         method: 'POST',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
@@ -308,40 +160,31 @@
         },
         body: JSON.stringify({ en_reparacion: estado })
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
         if (data.status === 'success') {
-            console.log('Estado actualizado exitosamente');
-            // Confirmar que el checkbox refleje el estado del servidor
             checkbox.checked = data.en_reparacion;
-            
-            // Guardar en localStorage para que lista-turnos pueda mostrar el popup
             if (data.en_reparacion) {
                 localStorage.setItem('clienteParaLlamar', nombreCliente);
             }
         } else {
-            console.error('Error actualizando el estado:', data.error);
-            // Revertir el estado del checkbox en caso de error
             checkbox.checked = !checkbox.checked;
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        // Revertir el estado del checkbox en caso de error
+    .catch(function(error) {
         checkbox.checked = !checkbox.checked;
     })
-    .finally(() => {
-        // Rehabilitar el checkbox
+    .finally(function() {
         checkbox.disabled = false;
     });
 }
 
 function getCookie(name) {
-    let cookieValue = null;
+    var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -350,27 +193,8 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-
-
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Agrega un evento click a todos los elementos con la clase llamar-cliente
     var botonesLlamar = document.querySelectorAll('.llamar-cliente');
     botonesLlamar.forEach(function(boton) {
         boton.addEventListener('click', function(event) {
@@ -380,14 +204,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const tableBody = document.querySelector('tbody');
-    let draggedRow = null;
+    var tableBody = document.querySelector('tbody');
+    var draggedRow = null;
 
-    tableBody.querySelectorAll('tr').forEach(row => {
+    tableBody.querySelectorAll('tr').forEach(function(row) {
         row.draggable = true;
 
         row.addEventListener('dragstart', function () {
@@ -402,13 +225,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         row.addEventListener('dragover', function (e) {
             e.preventDefault();
-            const bounding = this.getBoundingClientRect();
-            const offset = bounding.y + bounding.height / 2;
+            var bounding = this.getBoundingClientRect();
+            var offset = bounding.y + bounding.height / 2;
             if (e.clientY - offset > 0) {
-                this.style['border-bottom'] = '2px solid #4CAF50';
+                this.style['border-bottom'] = '2px solid #7ac900';
                 this.style['border-top'] = '';
             } else {
-                this.style['border-top'] = '2px solid #4CAF50';
+                this.style['border-top'] = '2px solid #7ac900';
                 this.style['border-bottom'] = '';
             }
         });
@@ -424,9 +247,9 @@ document.addEventListener('DOMContentLoaded', function () {
             this.style['border-top'] = '';
 
             if (draggedRow !== this) {
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-                const draggedIndex = rows.indexOf(draggedRow);
-                const targetIndex = rows.indexOf(this);
+                var rows = Array.from(tableBody.querySelectorAll('tr'));
+                var draggedIndex = rows.indexOf(draggedRow);
+                var targetIndex = rows.indexOf(this);
 
                 if (draggedIndex < targetIndex) {
                     this.after(draggedRow);
@@ -440,11 +263,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function actualizarOrden() {
-        const rows = document.querySelectorAll('tbody tr');
-        const order = Array.from(rows).map((row, index) => ({
-            id: row.getAttribute('data-id'),
-            position: index + 1
-        }));
+        var rows = document.querySelectorAll('tbody tr');
+        var order = Array.from(rows).map(function(row, index) {
+            return { id: row.getAttribute('data-id'), position: index + 1 };
+        });
 
         fetch("{% url 'actualizar_orden_turnos' %}", {
             method: 'POST',
@@ -453,9 +275,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-CSRFToken': '{{ csrf_token }}'
             },
             body: JSON.stringify({ order: order })
-        }).then(response => response.json())
-          .then(data => console.log(data))
-          .catch(error => console.error(error));
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) { console.log(data); })
+        .catch(function(error) { console.error(error); });
     }
 });
 </script>
+</body>
+</html>
