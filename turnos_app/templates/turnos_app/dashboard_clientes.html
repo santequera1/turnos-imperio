@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Clientes - Imperio Motos</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
+</head>
+<body class="bg-slate-950 min-h-screen" style="background-color: #000000; color: #FFFFFF">
+
+<!-- NAVBAR -->
+<nav class="fixed w-full z-20 top-0 left-0">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="{% url 'pagina_principal' %}" class="flex items-center">
+            <img src="{% static 'turnos_app/logo.png' %}" alt="logo" class="h-8 mr-3">
+        </a>
+        <div class="flex items-center space-x-3">
+            <a href="{% url 'dashboard' %}" class="px-4 py-2   rounded hover: text-sm">Historial</a>
+            <a href="{% url 'dashboard_clientes' %}" class="px-4 py-2 text-white  rounded text-sm font-medium">Clientes</a>
+            <a href="{% url 'agendar_turno' %}" class="px-4 py-2   rounded hover: text-sm">Caja</a>
+            <a href="{% url 'atender_turnos' %}" class="px-4 py-2   rounded hover: text-sm">Mec&aacute;nico</a>
+            <a href="{% url 'logout' %}" class="px-4 py-2 text-red-300  rounded hover:bg-red-900 text-sm">Salir</a>
+        </div>
+    </div>
+</nav>
+
+<div class="pt-20 px-6 max-w-screen-xl mx-auto">
+    <h1 class="text-white text-3xl font-bold mb-6">Clientes</h1>
+
+    <!-- BUSQUEDA EN TIEMPO REAL -->
+    <div class="rounded-lg p-4 mb-4">
+        <label class="block text-gray-400 text-sm mb-1">Buscar</label>
+        <input type="text" id="buscar-clientes" value="{{ q }}" placeholder="Nombre, placa, tel&eacute;fono, moto..."
+            class="w-full h-10 px-4 rounded  border  text-white focus:outline-none focus:">
+    </div>
+
+    <!-- FILTRO POR MOTO -->
+    <div class="rounded-lg p-4 mb-6">
+        <label class="block text-gray-400 text-sm mb-1">Filtrar por moto</label>
+        <div class="flex gap-3 items-end">
+            <div class="w-48">
+                <select id="filtro-marca" class="w-full h-10 px-3 rounded  border  text-white focus:outline-none focus: text-sm">
+                    <option value="">Todas las marcas</option>
+                </select>
+            </div>
+            <div class="flex-1 relative">
+                <input type="text" id="filtro-moto" placeholder="Escribir modelo... ej: CB110, Pulsar, Navi..."
+                    class="w-full h-10 px-4 rounded  border  text-white focus:outline-none focus: text-sm">
+                <ul id="moto-suggestions" class="absolute left-0 right-0 top-full mt-1  border  rounded-lg shadow-lg max-h-48 overflow-y-auto hidden z-50"></ul>
+            </div>
+            <button id="filtro-moto-limpiar" class="h-10 px-4  hover:bg-slate-600 text-white rounded text-sm hidden">Limpiar</button>
+        </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="rounded-lg overflow-hidden">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-400 uppercase">
+                <tr>
+                    <th class="px-4 py-3">Nombre</th>
+                    <th class="px-4 py-3">Tel&eacute;fono</th>
+                    <th class="px-4 py-3">Moto</th>
+                    <th class="px-4 py-3">Placa</th>
+                    <th class="px-4 py-3">Visitas</th>
+                    <th class="px-4 py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="clientes-tbody">
+                {% for cliente in clientes %}
+                <tr class="border-b border-slate-800 hover:/50">
+                    <td class="px-4 py-3 text-white font-medium">{{ cliente.nombre_cliente }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ cliente.numero_telefono }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ cliente.referencia_motocicleta }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ cliente.placa|default:"-" }}</td>
+                    <td class="px-4 py-3">
+                        <span class="bg-blue-900/50  px-2 py-1 rounded text-xs font-medium">{{ cliente.visitas }}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center space-x-3">
+                            <a href="{% url 'dashboard_cliente_detalle' cliente.id %}" class="hover:underline text-sm">Ver</a>
+                            <a href="{% url 'dashboard_cliente_editar' cliente.id %}" class="text-yellow-400 hover:underline text-sm">Editar</a>
+                            <a href="{% url 'dashboard_cliente_eliminar' cliente.id %}" class="text-red-400 hover:underline text-sm">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">No se encontraron clientes.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGINACION -->
+    {% if clientes.has_other_pages %}
+    <div class="flex justify-center items-center space-x-2 mt-6 mb-8">
+        {% if clientes.has_previous %}
+        <a href="?page={{ clientes.previous_page_number }}&q={{ q }}"
+            class="px-4 py-2  text-white rounded hover: text-sm">Anterior</a>
+        {% endif %}
+
+        <span class="text-gray-400 text-sm">P&aacute;gina {{ clientes.number }} de {{ clientes.paginator.num_pages }}</span>
+
+        {% if clientes.has_next %}
+        <a href="?page={{ clientes.next_page_number }}&q={{ q }}"
+            class="px-4 py-2  text-white rounded hover: text-sm">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+
+<script src="{% static 'turnos_app/js/motos_data.js' %}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("buscar-clientes");
+    const tbody = document.getElementById("clientes-tbody");
+    const marcaSelect = document.getElementById("filtro-marca");
+    const motoInput = document.getElementById("filtro-moto");
+    const motoSuggestions = document.getElementById("moto-suggestions");
+    const limpiarBtn = document.getElementById("filtro-moto-limpiar");
+    let timeout = null;
+    let motoFilter = "";
+
+    // Llenar el select de marcas
+    MARCAS.forEach(marca => {
+        const opt = document.createElement("option");
+        opt.value = marca;
+        opt.textContent = marca;
+        marcaSelect.appendChild(opt);
+    });
+
+    function buscarClientes() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            const q = input.value.trim();
+            let url = `/api/buscar-clientes-dashboard/?q=${encodeURIComponent(q)}`;
+            if (motoFilter) {
+                url += `&moto=${encodeURIComponent(motoFilter)}`;
+            }
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    tbody.innerHTML = "";
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No se encontraron clientes.</td></tr>';
+                        return;
+                    }
+                    data.forEach(c => {
+                        const tr = document.createElement("tr");
+                        tr.className = "border-b border-slate-800 hover:bg-slate-800/50";
+                        tr.innerHTML = `
+                            <td class="px-4 py-3 text-white font-medium">${c.nombre_cliente}</td>
+                            <td class="px-4 py-3 text-gray-300">${c.numero_telefono}</td>
+                            <td class="px-4 py-3 text-gray-300">${c.referencia_motocicleta}</td>
+                            <td class="px-4 py-3 text-gray-300">${c.placa}</td>
+                            <td class="px-4 py-3"><span class="bg-blue-900/50  px-2 py-1 rounded text-xs font-medium">${c.visitas}</span></td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center space-x-3">
+                                    <a href="/dashboard/clientes/${c.id}/" class="hover:underline text-sm">Ver</a>
+                                    <a href="/dashboard/clientes/${c.id}/editar/" class="text-yellow-400 hover:underline text-sm">Editar</a>
+                                    <a href="/dashboard/clientes/${c.id}/eliminar/" class="text-red-400 hover:underline text-sm">Eliminar</a>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+        }, 300);
+    }
+
+    input.addEventListener("input", buscarClientes);
+
+    // Autocomplete de motos
+    motoInput.addEventListener("input", function () {
+        const q = motoInput.value.trim();
+        const marca = marcaSelect.value;
+
+        // Si borraron todo el texto, limpiar filtro de moto
+        if (q.length < 1) {
+            motoSuggestions.classList.add("hidden");
+            if (marca) {
+                // Solo queda marca seleccionada
+                motoFilter = marca;
+                limpiarBtn.classList.remove("hidden");
+            } else {
+                // No hay nada, limpiar todo
+                motoFilter = "";
+                limpiarBtn.classList.add("hidden");
+            }
+            buscarClientes();
+            return;
+        }
+
+        // Mostrar sugerencias del catalogo
+        const results = buscarMotos(q, marca);
+        motoSuggestions.innerHTML = "";
+        if (results.length > 0) {
+            motoSuggestions.classList.remove("hidden");
+            results.slice(0, 15).forEach(m => {
+                const li = document.createElement("li");
+                li.innerHTML = `<span class="text-white">${m.modelo}</span> <span class="text-gray-500 text-xs ml-1">${m.linea}</span>`;
+                li.className = "px-4 py-2 hover:bg-slate-700 cursor-pointer border-b border-slate-700 last:border-0";
+                li.addEventListener("click", function () {
+                    motoInput.value = m.modelo;
+                    motoFilter = m.modelo;
+                    motoSuggestions.classList.add("hidden");
+                    limpiarBtn.classList.remove("hidden");
+                    buscarClientes();
+                });
+                motoSuggestions.appendChild(li);
+            });
+        } else {
+            motoSuggestions.classList.add("hidden");
+            // Aunque no haya sugerencia del catalogo, usar el texto como filtro directo
+            motoFilter = q;
+            limpiarBtn.classList.remove("hidden");
+            buscarClientes();
+        }
+    });
+
+    // Cuando cambia la marca
+    marcaSelect.addEventListener("change", function () {
+        const q = motoInput.value.trim();
+        if (q.length >= 1) {
+            motoInput.dispatchEvent(new Event("input"));
+        } else if (marcaSelect.value) {
+            motoFilter = marcaSelect.value;
+            limpiarBtn.classList.remove("hidden");
+            buscarClientes();
+        } else {
+            motoFilter = "";
+            limpiarBtn.classList.add("hidden");
+            buscarClientes();
+        }
+    });
+
+    // Limpiar filtro de moto
+    limpiarBtn.addEventListener("click", function () {
+        motoInput.value = "";
+        motoFilter = "";
+        marcaSelect.value = "";
+        limpiarBtn.classList.add("hidden");
+        buscarClientes();
+    });
+
+    // Cerrar sugerencias al hacer click fuera
+    document.addEventListener("click", function (e) {
+        if (!motoSuggestions.contains(e.target) && e.target !== motoInput) {
+            motoSuggestions.classList.add("hidden");
+        }
+    });
+});
+</script>
+</body>
+</html>

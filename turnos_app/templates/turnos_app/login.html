@@ -1,73 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Iniciar Sesión - Imperio Motos</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen" style="background-color: #000000; color: #FFFFFF">
 
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-  <form method="post">
-    {% csrf_token %}
-  <div class="flex items-center justify-between pb-4 bg-white dark:bg-gray-900">
-      <div class="relative">
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-              </svg>
-          </div>
-          <input type="text" id="table-search-users" class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users">
-      </div>
-  </div>
-  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        {% for turno in turnos %}
-        <tr>
-              <th scope="col" class="p-4">
-                  <div class="flex items-center">
-                      <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                      <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                  </div>
-              </th>
-              <th scope="col" class="px-6 py-3">
-                {{ turno.nombre_cliente }}
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Position
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Status
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Action
-              </th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td class="w-4 p-4">
-                  <div class="flex items-center">
-                      <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                      <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                  </div>
-              </td>
-              <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                  <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image">
-                  <div class="pl-3">
-                      <div class="text-base font-semibold">Neil Sims</div>
-                      <div class="font-normal text-gray-500">neil.sims@flowbite.com</div>
-                  </div>  
-              </th>
-              <td class="px-6 py-4">
-                  React Developer
-              </td>
-              <td class="px-6 py-4">
-                  <div class="flex items-center">
-                      <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
-                  </div>
-              </td>
-              <td class="px-6 py-4">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
-              </td>
-          </tr>
-          {% endfor %}
+    <div class="w-full max-w-md p-8">
+        <div class="flex justify-center mb-8">
+            <img src="{% static 'turnos_app/logo.png' %}" alt="logo" class="h-20">
+        </div>
 
-      </tbody>
-  </table>
-  </form>
-</div>
+        <div class="rounded-lg p-8 shadow-lg">
+            <h2 class="text-white text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
 
-  
+            {% if form.errors %}
+            <div class="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded mb-4">
+                Usuario o contraseña incorrectos.
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="id_username" class="block text-gray-300 text-sm font-medium mb-2">Usuario</label>
+                    <input type="text" name="username" id="id_username" autofocus
+                        class="w-full h-10 px-4 rounded  border  text-white focus:outline-none focus:"
+                        placeholder="Usuario">
+                </div>
+
+                <div class="mb-6">
+                    <label for="id_password" class="block text-gray-300 text-sm font-medium mb-2">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="id_password"
+                            class="w-full h-10 px-4 pr-12 rounded  border  text-white focus:outline-none focus:"
+                            placeholder="Contraseña">
+                        <button type="button" id="toggle-password"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                            <svg id="icon-eye" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <svg id="icon-eye-off" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-2 px-4  hover: text-white font-medium rounded transition duration-200">
+                    Ingresar
+                </button>
+            </form>
+        </div>
+    </div>
+
+<script>
+document.getElementById('toggle-password').addEventListener('click', function() {
+    const input = document.getElementById('id_password');
+    const iconEye = document.getElementById('icon-eye');
+    const iconEyeOff = document.getElementById('icon-eye-off');
+    if (input.type === 'password') {
+        input.type = 'text';
+        iconEye.classList.add('hidden');
+        iconEyeOff.classList.remove('hidden');
+    } else {
+        input.type = 'password';
+        iconEye.classList.remove('hidden');
+        iconEyeOff.classList.add('hidden');
+    }
+});
+</script>
+</body>
+</html>

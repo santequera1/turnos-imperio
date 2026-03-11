@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Imperio Motos - Reporte</title>
+    <title>Imperio Motos | Atender Turnos (Mecanico)</title>
     <meta http-equiv="refresh" content="400"> <!-- Refrescar la página cada 10 segundos -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'turnos_app/styles.css' %}">
@@ -12,24 +12,10 @@
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
-  <script src="https://cdn.tailwindcss.com/3.3.0"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        fontFamily: {
-          sans: ["Roboto", "sans-serif"],
-          body: ["Roboto", "sans-serif"],
-          mono: ["ui-monospace", "monospace"],
-        },
-      },
-      corePlugins: {
-        preflight: false,
-      },
-    };
-  </script>
+  <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
+
   </head>
-  <body style="background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%); min-height: 100vh;">
+  <body class="bg-slate-950" style="background-color: #000000; color: #FFFFFF">
     
     <audio src="/static/turnos_app/js/turnosound.mp3" autoplay>
       Your browser does not support the <code>audio</code> element.
@@ -42,7 +28,7 @@
             <label class="text-white dark:text-gray-200">
               Cliente
             </label>
-            <input class="appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" style="border-color: #39FF14;" id="grid-first-name" type="text" placeholder="Javier Jimenez">
+            <input class="appearance-none block w-full bg-white text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Javier Jimenez">
           </div>
           <div class="w-full md:w-1/3 px-3">
             <label class="text-white dark:text-gray-200">
@@ -58,7 +44,7 @@
         <div class="flex flex-wrap -mx-3 mb-4">
           <div class="w-full px-3">
             <label class="text-white dark:text-gray-200">Detalles de la reparación</label>
-            <textarea id="textarea" type="textarea" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"></textarea>
+            <textarea id="textarea" type="textarea" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus: dark:focus: focus:outline-none focus:ring"></textarea>
           </div>
         </div>
         <div class="flex flex-wrap -mx-3 mb-2">
@@ -119,7 +105,7 @@
             </div>
           </div>
           <div class="w-full px-3 py-3 mb-6">
-            <button id="submit-button" class="font-bold py-2 px-4 rounded focus:outline-none" style="background: linear-gradient(90deg, #39FF14 0%, #00CC00 100%); color: #000000;">
+            <button id="submit-button" class="hover: text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
               Enviar Reporte
             </button>
           </div>
@@ -198,7 +184,7 @@
               <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
           <div class="flex items-center justify-center">
-              <a href="{% url 'agendar_turno' %}" class="inline-flex items-center justify-center w-10 h-10 font-medium rounded-full group focus:ring-4 focus:outline-none" style="background-color: #39FF14; color: #000000;">
+              <a href="{% url 'agendar_turno' %}" class="inline-flex items-center justify-center w-10 h-10 font-medium bg-indigo-950 rounded-full hover: group focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800">
                   <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                   </svg>
@@ -293,9 +279,9 @@ function sonar(audio){
 <script>
   // Script para enviar reporte
   //Credenciales de Twilio
-  const twilioAccountSid = '';
-  const twilioAuthToken = '';
-  const twilioPhoneNumber = '3217171562';
+  const twilioAccountSid = '{{ twilio_account_sid }}';
+  const twilioAuthToken = '{{ twilio_auth_token }}';
+  const twilioPhoneNumber = '{{ twilio_phone_number }}';
 
   $(document).ready(function () {
     $('#submit-button').click(function () {

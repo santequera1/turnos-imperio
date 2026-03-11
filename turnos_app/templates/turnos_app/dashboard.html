@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Dashboard - Imperio Motos</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
+</head>
+<body class="bg-slate-950 min-h-screen" style="background-color: #000000; color: #FFFFFF">
+
+<!-- NAVBAR -->
+<nav class="fixed w-full z-20 top-0 left-0">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="{% url 'pagina_principal' %}" class="flex items-center">
+            <img src="{% static 'turnos_app/logo.png' %}" alt="logo" class="h-8 mr-3">
+        </a>
+        <div class="flex items-center space-x-3">
+            <a href="{% url 'dashboard' %}" class="px-4 py-2 text-white  rounded text-sm font-medium">Historial</a>
+            <a href="{% url 'dashboard_clientes' %}" class="px-4 py-2   rounded hover: text-sm">Clientes</a>
+            <a href="{% url 'agendar_turno' %}" class="px-4 py-2   rounded hover: text-sm">Caja</a>
+            <a href="{% url 'atender_turnos' %}" class="px-4 py-2   rounded hover: text-sm">Mec&aacute;nico</a>
+            <a href="{% url 'logout' %}" class="px-4 py-2 text-red-300  rounded hover:bg-red-900 text-sm">Salir</a>
+        </div>
+    </div>
+</nav>
+
+<div class="pt-20 px-6 max-w-screen-xl mx-auto">
+    <h1 class="text-white text-3xl font-bold mb-6">Dashboard</h1>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="rounded-lg p-6">
+            <p class="text-gray-400 text-sm">Total Clientes</p>
+            <p class="text-white text-3xl font-bold">{{ total_clientes }}</p>
+        </div>
+        <div class="rounded-lg p-6">
+            <p class="text-gray-400 text-sm">Turnos Hoy</p>
+            <p class="text-white text-3xl font-bold">{{ turnos_hoy }}</p>
+        </div>
+        <div class="rounded-lg p-6">
+            <p class="text-gray-400 text-sm">En Cola / Reparaci&oacute;n</p>
+            <p class="text-green-400 text-3xl font-bold">{{ turnos_activos }}</p>
+        </div>
+        <div class="rounded-lg p-6">
+            <p class="text-gray-400 text-sm">Total Finalizados</p>
+            <p class="text-white text-3xl font-bold">{{ total_turnos }}</p>
+        </div>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="rounded-lg p-4 mb-6">
+        <form method="get" class="flex flex-wrap items-end gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-gray-400 text-sm mb-1">Buscar</label>
+                <input type="text" name="q" value="{{ q }}" placeholder="Nombre, moto..."
+                    class="w-full h-10 px-4 rounded  border  text-white focus:outline-none focus:">
+            </div>
+            <div>
+                <label class="block text-gray-400 text-sm mb-1">Desde</label>
+                <input type="date" name="fecha_desde" value="{{ fecha_desde }}"
+                    class="h-10 px-4 rounded  border  text-white focus:outline-none focus:">
+            </div>
+            <div>
+                <label class="block text-gray-400 text-sm mb-1">Hasta</label>
+                <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}"
+                    class="h-10 px-4 rounded  border  text-white focus:outline-none focus:">
+            </div>
+            <div>
+                <button type="submit" class="h-10 px-6  hover: text-white rounded text-sm font-medium">Filtrar</button>
+            </div>
+            {% if q or fecha_desde or fecha_hasta %}
+            <div>
+                <a href="{% url 'dashboard' %}" class="h-10 px-4  hover:bg-slate-600 text-white rounded text-sm inline-flex items-center">Limpiar</a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- TABLA -->
+    <div class="rounded-lg overflow-hidden">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-400 uppercase">
+                <tr>
+                    <th class="px-4 py-3">#Turno</th>
+                    <th class="px-4 py-3">Cliente</th>
+                    <th class="px-4 py-3">Moto</th>
+                    <th class="px-4 py-3">Reparaci&oacute;n</th>
+                    <th class="px-4 py-3">Fecha Creaci&oacute;n</th>
+                    <th class="px-4 py-3">Fecha Finalizaci&oacute;n</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for turno in turnos %}
+                <tr class="border-b border-slate-800 hover:/50">
+                    <td class="px-4 py-3 text-white font-medium">{{ turno.numero_turno }}</td>
+                    <td class="px-4 py-3 text-white">
+                        {% if turno.cliente_frecuente %}
+                        <a href="{% url 'dashboard_cliente_detalle' turno.cliente_frecuente.id %}" class="hover:underline">{{ turno.nombre_cliente }}</a>
+                        {% else %}
+                        {{ turno.nombre_cliente }}
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-gray-300">{{ turno.referencia_motocicleta|default:"-" }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ turno.motivo_reparacion|default:"-" }}</td>
+                    <td class="px-4 py-3 text-gray-400">{% if turno.fecha_creacion %}{{ turno.fecha_creacion|date:"d/m/Y H:i" }}{% else %}-{% endif %}</td>
+                    <td class="px-4 py-3 text-gray-400">{% if turno.fecha_finalizacion %}{{ turno.fecha_finalizacion|date:"d/m/Y H:i" }}{% else %}-{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">No se encontraron turnos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGINACION -->
+    {% if turnos.has_other_pages %}
+    <div class="flex justify-center items-center space-x-2 mt-6 mb-8">
+        {% if turnos.has_previous %}
+        <a href="?page={{ turnos.previous_page_number }}&q={{ q }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}"
+            class="px-4 py-2  text-white rounded hover: text-sm">Anterior</a>
+        {% endif %}
+
+        <span class="text-gray-400 text-sm">P&aacute;gina {{ turnos.number }} de {{ turnos.paginator.num_pages }}</span>
+
+        {% if turnos.has_next %}
+        <a href="?page={{ turnos.next_page_number }}&q={{ q }}&fecha_desde={{ fecha_desde }}&fecha_hasta={{ fecha_hasta }}"
+            class="px-4 py-2  text-white rounded hover: text-sm">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

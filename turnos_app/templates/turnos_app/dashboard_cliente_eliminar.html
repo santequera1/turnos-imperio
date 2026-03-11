@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Eliminar {{ cliente.nombre_cliente }} - Imperio Motos</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
+</head>
+<body class="bg-slate-950 min-h-screen" style="background-color: #000000; color: #FFFFFF">
+
+<!-- NAVBAR -->
+<nav class="fixed w-full z-20 top-0 left-0">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="{% url 'pagina_principal' %}" class="flex items-center">
+            <img src="{% static 'turnos_app/logo.png' %}" alt="logo" class="h-8 mr-3">
+        </a>
+        <div class="flex items-center space-x-3">
+            <a href="{% url 'dashboard' %}" class="px-4 py-2   rounded hover: text-sm">Historial</a>
+            <a href="{% url 'dashboard_clientes' %}" class="px-4 py-2   rounded hover: text-sm">Clientes</a>
+            <a href="{% url 'agendar_turno' %}" class="px-4 py-2   rounded hover: text-sm">Caja</a>
+            <a href="{% url 'atender_turnos' %}" class="px-4 py-2   rounded hover: text-sm">Mec&aacute;nico</a>
+            <a href="{% url 'logout' %}" class="px-4 py-2 text-red-300  rounded hover:bg-red-900 text-sm">Salir</a>
+        </div>
+    </div>
+</nav>
+
+<div class="pt-20 px-6 max-w-screen-xl mx-auto">
+
+    <div class="rounded-lg p-6 max-w-lg mx-auto mt-10">
+        <h1 class="text-white text-2xl font-bold mb-4">Eliminar Cliente</h1>
+
+        <div class="bg-red-900/30 border border-red-500 rounded p-4 mb-6">
+            <p class="text-red-300">&iquest;Est&aacute;s seguro de que deseas eliminar a <strong class="text-white">{{ cliente.nombre_cliente }}</strong>?</p>
+            <p class="text-red-400 text-sm mt-2">Esta acci&oacute;n no se puede deshacer. Los turnos asociados no se eliminar&aacute;n.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex space-x-3">
+                <button type="submit" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-sm font-medium">S&iacute;, eliminar</button>
+                <a href="{% url 'dashboard_cliente_detalle' cliente.id %}" class="px-6 py-2  hover:bg-slate-600 text-white rounded text-sm inline-flex items-center">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

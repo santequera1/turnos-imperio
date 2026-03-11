@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Imperio Motos - Atender Turnos</title>
+    <title>Imperio Motos | Atender Turnos (Mecanico)</title>
     <meta http-equiv="refresh" content="400"> <!-- Refrescar la página cada 10 segundos -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'turnos_app/styles.css' %}">
@@ -14,28 +14,15 @@
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
-  <script src="https://cdn.tailwindcss.com/3.3.0"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        fontFamily: {
-          sans: ["Roboto", "sans-serif"],
-          body: ["Roboto", "sans-serif"],
-          mono: ["ui-monospace", "monospace"],
-        },
-      },
-      corePlugins: {
-        preflight: false,
-      },
-    };
-  </script>
+  <link rel="stylesheet" href="{% static "turnos_app/css/tailwind.css" %}">
+
+
   <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
   </head>
-  <body style="background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%); min-height: 100vh;">
+  <body class="bg-slate-950" style="background-color: #000000; color: #FFFFFF">
     <a href="{% url 'agendar_turno' %}">
       <div id="logo-mts" class="absolute top-2">
-        <img src="{% static 'turnos_app/logo-horizontal.png' %}" class="w-96" style="filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.3));">
+        <img src="{% static 'turnos_app/logo.png' %}" class="w-96">
       </div>
     </a>
     <audio src="/static/turnos_app/js/turnosound.mp3" autoplay>
@@ -70,35 +57,65 @@
 
               <!-- Modifica tus botones de "Llamar" para incluir un identificador único y datos relevantes -->
 
-<!-- Agrega este código a tu bucle for -->
 {% for turno in turnos %}
-<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+<tr data-id="{{ turno.id }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+    <!-- Número en la lista -->
     <td class="w-3 p-3">
-      {% if forloop.counter <= 8 %}
-      <div class="min-w-8 w-8 text-right text-gray-700">{{ forloop.counter }}</div>
-      {% endif %}
+        <div class="min-w-8 w-8 text-right text-gray-700">{{ forloop.counter }}</div>
     </td>
+
+    <!-- Cliente y moto -->
     <th scope="row" class="flex items-center px-2 py-0 text-gray-900 whitespace-nowrap dark:text-white">
-      <img class="w-8 h-8 rounded-full bg-white px-1 py-1" src="{% static 'turnos_app/user.png' %}" alt="Imagen de la moto" width="30">                      
-      <div class="pl-3">
-          <div class="text-base font-semibold">{{ turno.referencia_motocicleta }} </div>
-          <div class="font-normal text-gray-500"> {{ turno.nombre_cliente }} </div>
-      </div>  
+        <img class="w-8 h-8 rounded-full bg-white px-1 py-1" src="{% static 'turnos_app/user.png' %}" alt="Imagen de la moto" width="30">
+        <div class="pl-3">
+            <div class="text-base font-semibold">{{ turno.referencia_motocicleta }}</div>
+            <div class="font-normal text-gray-500">
+                <p id="nombre-cliente">{{ turno.nombre_cliente }}</p>
+            </div>
+        </div>
     </th>
+
+    <!-- Motivo de reparación -->
     <td class="px-6 py-2">
-      {{ turno.motivo_reparacion }}
+        {{ turno.motivo_reparacion }}
     </td>
+
+    <!-- Número de turno -->
     <td class="px-6 py-2">
         <div class="flex items-center">
-            <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>  #{{ turno.numero_turno }}
+            <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> 
+            #{{ turno.numero_turno }}
         </div>
     </td>
+
+    <!-- Acciones -->
     <td class="px-6 py-2 flex items-center">
-  
-        <button name="atender" value="{{ turno.id }}" class="text-xs rounded font-bold py-2 px-2" style="background-color: #39FF14; color: #000000;">Finalizar</button>
-        </td>
+        <!-- Botón finalizar -->
+        <button type="submit" name="atender" value="{{ turno.id }}" class="text-xs rounded bg-red-700 font-normal py-2 px-2 text-white">
+            Finalizar
+        </button>
+
+        <!-- Botón llamar -->
+        <a href="{% url 'llamar_cliente' turno.id %}" class="bg-green-900 hover: text-white text-xs py-2 px-4 rounded mx-2" id="boton-alerta">
+            Llamar
+        </a>
+
+        <!-- Botón avisar -->
+        <a href="{% url 'llamar_cliente' turno.id %}" class="bg-green-900 hover: text-white text-xs py-2 px-4 rounded mx-2 llamar-cliente" 
+           data-nombre="{{ turno.nombre_cliente }}" onclick="almacenarCliente('{{ turno.nombre_cliente }}')">
+            Avisar
+        </a>
+         <label class="switch">
+        
+        <input type="checkbox" onchange="actualizarEstadoReparacion(this, '{{ turno.id }}');" data-nombre-cliente="{{ turno.nombre_cliente }}" {% if turno.en_reparacion %}checked{% endif %}>
+        <span class="slider round"></span>
+      </label>
+    </td>
+    
+      
 </tr>
 {% endfor %}
+
 
     
           </tbody>
@@ -109,8 +126,14 @@
 
   
 
+    <script>
+   
+      </script>
+      
 
-<!-- Agrega este script al final de tu archivo HTML -->
+
+
+
 <script>
   // Función para mostrar el modal
   function showModal(modalId) {
@@ -151,8 +174,7 @@
   });
 </script>
 
-  
-  
+
 
 
 
@@ -180,7 +202,7 @@
               <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
           <div class="flex items-center justify-center">
-              <a href="{% url 'agendar_turno' %}" class="inline-flex items-center justify-center w-10 h-10 font-medium rounded-full group focus:ring-4 focus:outline-none" style="background-color: #39FF14; color: #000000;">
+              <a href="{% url 'agendar_turno' %}" class="inline-flex items-center justify-center w-10 h-10 font-medium bg-indigo-950 rounded-full hover: group focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800">
                   <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                   </svg>
@@ -234,12 +256,13 @@
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
 <script>
   var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
-function sonar(audio){
-    var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
-    audio.play();}
-</script>
+  function sonar(audio){
+      var audio = new Audio("/static/turnos_app/js/turnosound.mp3");
+      audio.play();}
+  </script>
 <script>
   $(document).ready(function () {
+    
     // Agrega un controlador de eventos de clic a los botones de "Llamar" con la clase "boton-llamar"
     $('.boton-llamar').on('click', function () {
       // Obtiene los datos relevantes del atributo data
@@ -267,8 +290,172 @@ function sonar(audio){
       });
     });
   });
+
+
+  
+  function actualizarEstadoReparacion(checkbox, turnoId) {
+    const estado = checkbox.checked ? '1' : '0';
+    const nombreCliente = checkbox.getAttribute('data-nombre-cliente');
+
+    // Deshabilitar el checkbox temporalmente para evitar clicks múltiples
+    checkbox.disabled = true;
+
+    fetch(`/actualizar-estado/${turnoId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ en_reparacion: estado })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Estado actualizado exitosamente');
+            // Confirmar que el checkbox refleje el estado del servidor
+            checkbox.checked = data.en_reparacion;
+            
+            // Guardar en localStorage para que lista-turnos pueda mostrar el popup
+            if (data.en_reparacion) {
+                localStorage.setItem('clienteParaLlamar', nombreCliente);
+            }
+        } else {
+            console.error('Error actualizando el estado:', data.error);
+            // Revertir el estado del checkbox en caso de error
+            checkbox.checked = !checkbox.checked;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Revertir el estado del checkbox en caso de error
+        checkbox.checked = !checkbox.checked;
+    })
+    .finally(() => {
+        // Rehabilitar el checkbox
+        checkbox.disabled = false;
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Agrega un evento click a todos los elementos con la clase llamar-cliente
+    var botonesLlamar = document.querySelectorAll('.llamar-cliente');
+    botonesLlamar.forEach(function(boton) {
+        boton.addEventListener('click', function(event) {
+            event.preventDefault();
+            var nombreCliente = boton.getAttribute('data-nombre');
+            miFuncLlamar(nombreCliente);
+        });
+    });
+});
+
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.querySelector('tbody');
+    let draggedRow = null;
 
+    tableBody.querySelectorAll('tr').forEach(row => {
+        row.draggable = true;
 
-</body>
-</html>
+        row.addEventListener('dragstart', function () {
+            draggedRow = this;
+            this.style.opacity = '0.5';
+        });
+
+        row.addEventListener('dragend', function () {
+            draggedRow = null;
+            this.style.opacity = '1';
+        });
+
+        row.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            const bounding = this.getBoundingClientRect();
+            const offset = bounding.y + bounding.height / 2;
+            if (e.clientY - offset > 0) {
+                this.style['border-bottom'] = '2px solid #4CAF50';
+                this.style['border-top'] = '';
+            } else {
+                this.style['border-top'] = '2px solid #4CAF50';
+                this.style['border-bottom'] = '';
+            }
+        });
+
+        row.addEventListener('dragleave', function () {
+            this.style['border-bottom'] = '';
+            this.style['border-top'] = '';
+        });
+
+        row.addEventListener('drop', function (e) {
+            e.preventDefault();
+            this.style['border-bottom'] = '';
+            this.style['border-top'] = '';
+
+            if (draggedRow !== this) {
+                const rows = Array.from(tableBody.querySelectorAll('tr'));
+                const draggedIndex = rows.indexOf(draggedRow);
+                const targetIndex = rows.indexOf(this);
+
+                if (draggedIndex < targetIndex) {
+                    this.after(draggedRow);
+                } else {
+                    this.before(draggedRow);
+                }
+
+                actualizarOrden();
+            }
+        });
+    });
+
+    function actualizarOrden() {
+        const rows = document.querySelectorAll('tbody tr');
+        const order = Array.from(rows).map((row, index) => ({
+            id: row.getAttribute('data-id'),
+            position: index + 1
+        }));
+
+        fetch("{% url 'actualizar_orden_turnos' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ order: order })
+        }).then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error(error));
+    }
+});
+</script>
